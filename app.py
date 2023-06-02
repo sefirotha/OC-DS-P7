@@ -5,7 +5,11 @@ Source:
 Local URL: 
 Network URL: 
 """
+# ====================================================================
+# Version : 1.0 - 
+# ====================================================================
 
+__version__ = '1.0.0'
 
 
 import streamlit as st
@@ -26,14 +30,14 @@ import datetime
 # Répertoire de sauvegarde du meilleur modèle
 best_model = "tuned_lgbm_f10.pkl"
 # Test set 
-file_test_set = "Data/Processed_data/test_df.pkl"
-file_client_test = "Data/Processed_data/application_test.pkl"
+file_test_set = "./Data/Processed_data/test_df.pkl"
+file_client_test = "./Data/Processed_data/application_test.pkl"
 
 # ====================================================================
 # IMAGES
 # ====================================================================
 # Logo de l"entreprise
-logo =  Image.open("Data/images/logo.png") 
+logo =  Image.open("./Data/images/logo.png") 
 
 # ====================================================================
 # HEADER - TITRE
