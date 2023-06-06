@@ -21,8 +21,13 @@ import pickle
 from pycaret.classification import predict_model
 from pycaret.classification import plot_model
 import plotly.graph_objects as go
+import plotly.express as px
+
+import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 import shap
+import json
 
 
 # ====================================================================
@@ -42,6 +47,17 @@ file_train_set = "./Data/Processed_data/train_df.pkl"
 # ====================================================================
 # Logo de l"entreprise
 logo = Image.open("./Data/images/logo.png")
+
+
+# ====================================================================
+# FONCTIONS
+# ====================================================================
+@st.cache
+def load_age_population(data):
+    data_age = round((data["DAYS_BIRTH"]/365), 2)
+    return data_age
+
+
 
 # ====================================================================
 # HEADER - TITRE
@@ -236,14 +252,10 @@ client_label = int(json.loads(response_label.text)["prediction"])
 # Graphique de jauge du cédit score ==========================================
 fig_jauge = go.Figure(go.Indicator(
     mode="gauge+number+delta",
-    # Score du client en % df_dashboard["SCORE_CLIENT_%"]
+    # Score du client
     value=score_client,
     domain={"x": [0, 1], "y": [0, 1]},
     title={"text": "Risk probablity of default", "font": {"size": 24}},
-    # Score des 10 voisins test set
-    # delta = {"reference": score_moy_voisins_test,
-    #          "increasing": {"color": "Crimson"},
-    #          "decreasing": {"color": "Green"}},
     gauge={"axis": {"range": [None, 100],
                     "tickwidth": 3,
                     "tickcolor": "darkblue"},
@@ -354,5 +366,109 @@ def all_infos_clients():
 
 st.sidebar.subheader('More info')
 all_infos_clients()
+
+
+# --------------------------------------------------------------------
+# CLIENTS SIMILAIRES 
+# --------------------------------------------------------------------
+def infos_clients_similaires():
+    ''' Affiche les informations sur les clients similaires :
+            - traits stricts.
+            - demande de prêt
+    '''
+    html_clients_similaires="""
+        <div class="card">
+            <div class="card-body" style="border-radius: 10px 10px 0px 0px;
+                  background: #DEC7CB; padding-top: 5px; width: auto;
+                  height: 40px;">
+                  <h3 class="card-title" style="background-color:#DEC7CB; color:Crimson;
+                      font-family:Georgia; text-align: center; padding: 0px 0;">
+                      Clients similaires
+                  </h3>
+            </div>
+        </div>
+        """
+    titre = True
+    
+    # ====================== GRAPHIQUES COMPARANT CLIENT COURANT / CLIENTS SIMILAIRES =========================== 
+    if st.sidebar.checkbox("Voir graphiques comparatifs ?"):     
+        
+        if titre:
+            st.markdown(html_clients_similaires, unsafe_allow_html=True)
+            titre = False
+
+        with st.spinner('**Printing comparing plots...**'):                 
+                       
+            with st.expander('Comparison current client / other clients',
+                             expanded=True):
+                st.write("")
+                st.write("")
+                st.write("")
+                with st.container():
+                    col1, col2 = st.columns([1.5, 1])
+                    with col1:
+                        # ============ Histogramme de l'âge des clients ==============================================
+                        age_client = df_info_client['AGE'].loc[df_info_client['SK_ID_CURR']== client_id]
+                        fig_age = px.histogram(df_info_client, x="AGE", color="GENDER", hover_data=df_info_client.columns)
+                        fig_age.add_vline(x=int(age_client), line_dash = 'dash', line_color = 'firebrick')
+                        fig_age.update_layout()
+                        fig_age.update_layout(paper_bgcolor="white",
+                        height=400, 
+                        width=500,
+                        font={"color": "darkblue", "family": "Arial"},
+                        margin=dict(l=20, r=20, b=20, t=20, pad=10),
+                        title_text='Distribution of age')
+                        st.plotly_chart(fig_age)
+
+                        # ============ Histogramme du revenu des clients ==============================================
+                        revenu_client = df_info_client['INCOME'].loc[df_info_client['SK_ID_CURR']== client_id]
+                        fig_income = px.histogram(df_info_client, x="INCOME", hover_data=df_info_client.columns)
+                        fig_income.add_vline(x=int(revenu_client), line_dash = 'dash', line_color = 'firebrick')
+                        fig_income.update_layout()
+                        fig_income.update_layout(paper_bgcolor="white",
+                        height=400, 
+                        width=500,
+                        font={"color": "darkblue", "family": "Arial"},
+                        margin=dict(l=20, r=20, b=20, t=20, pad=10),
+                        title_text='Distribution of income')
+                        st.plotly_chart(fig_income)
+
+                    with col2:
+                        
+                        # ============ Histogramme prix du bien ==============================================
+                        good_price = df_info_pret['GOODS\' PRICE ($)'].loc[df_info_client['SK_ID_CURR']== client_id]
+                        fig_good = px.histogram(df_info_pret, x="GOODS\' PRICE ($)" , hover_data=df_info_pret.columns)
+                        fig_good.add_vline(x=int(good_price), line_dash = 'dash', line_color = 'firebrick')
+                        fig_good.update_layout()
+                        fig_good.update_layout(paper_bgcolor="white",
+                        height=400, 
+                        width=500,
+                        font={"color": "darkblue", "family": "Arial"},
+                        margin=dict(l=20, r=20, b=20, t=20, pad=10),
+                        title_text='Distribution of age')
+                        st.plotly_chart(fig_good)
+
+
+                        # ============ Histogramme du revenu des clients ==============================================
+                        credit_client = df_info_pret['AMOUNT REQUESTED ($)'].loc[df_info_client['SK_ID_CURR']== client_id]
+                        fig_income = px.histogram(df_info_pret, x="AMOUNT REQUESTED ($)", hover_data=df_info_pret.columns)
+                        fig_income.add_vline(x=int(credit_client), line_dash = 'dash', line_color = 'firebrick')
+                        fig_income.update_layout()
+                        fig_income.update_layout(paper_bgcolor="white",
+                        height=400, 
+                        width=500,
+                        font={"color": "darkblue", "family": "Arial"},
+                        margin=dict(l=20, r=20, b=20, t=20, pad=10),
+                        title_text='Distribution of amount requested')
+                        st.plotly_chart(fig_income)
+
+
+
+st.sidebar.subheader('Clients similaires')
+infos_clients_similaires()
+
+
+
+
 
 
