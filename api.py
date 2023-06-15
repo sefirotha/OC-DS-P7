@@ -30,7 +30,7 @@ def predict(data: input_model):
 def predict_proba(data: input_model):
     data = pd.DataFrame([data.dict()])
     prediction_proba = predict_model(model, data=data, raw_score = True)
-    return {"prediction proba": prediction_proba["prediction_score_1"].iloc[0]}
+    return {"prediction_proba": prediction_proba["prediction_score_1"].iloc[0]}
 
 # for test only
 
