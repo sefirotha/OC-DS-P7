@@ -1,1 +1,1 @@
-web: gunicorn predictapi:api
+web: gunicorn main:api
