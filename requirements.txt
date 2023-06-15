@@ -1,7 +1,8 @@
 
-pycaret
+pycaret == 3.0.2
 fastapi
 uvicorn
 pydantic
-pandas
+pandas == 1.5.3
 gunicorn
+scikit-learn == 1.1.3
