@@ -32,6 +32,8 @@ def predict(data: input_model):
     predictions = predict_model(model, data=data, raw_score = True)
     return {"prediction": predictions["prediction_score_1"].iloc[0]}
 
+# for test only
+
 # Attention au host et au port
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
