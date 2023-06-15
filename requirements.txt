@@ -2,3 +2,5 @@
 pycaret
 fastapi
 uvicorn
+pydantic
+pandas
