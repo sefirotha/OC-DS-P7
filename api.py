@@ -21,16 +21,16 @@ output_model = create_model("api_output", prediction=1.0)
 @app.post("/predict", response_model=output_model)
 def predict(data: input_model):
     data = pd.DataFrame([data.dict()])
-    predictions = predict_model(model, data=data, raw_score = True)
-    return {"prediction": predictions["prediction_label"].iloc[0]}
+    prediction = predict_model(model, data=data, raw_score = True)
+    return {"prediction": prediction["prediction_label"].iloc[0]}
 
 
 # Define predict_proba function
 @app.post("/predict_proba", response_model=output_model)
 def predict_proba(data: input_model):
     data = pd.DataFrame([data.dict()])
-    predictions = predict_model(model, data=data, raw_score = True)
-    return {"prediction": predictions["prediction_score_1"].iloc[0]}
+    prediction_proba = predict_model(model, data=data, raw_score = True)
+    return {"prediction proba": prediction_proba["prediction_score_1"].iloc[0]}
 
 # for test only
 
