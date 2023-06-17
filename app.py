@@ -14,8 +14,8 @@ __version__ = '1.0.0'
 
 import streamlit as st
 from PIL import Image
-import joblib
-import pycaret
+#import joblib
+#import pycaret
 import requests
 import pickle
 from pycaret.classification import predict_model
@@ -24,7 +24,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 import matplotlib.pyplot as plt
-import seaborn as sns
+#import seaborn as sns
 import numpy as np
 import shap
 import json
@@ -41,6 +41,8 @@ file_test_set = "./Data/Processed_data/test_df.pkl"
 file_client_test = "./Data/Processed_data/application_test.pkl"
 # Train set
 file_train_set = "./Data/Processed_data/train_df.pkl"
+# Shap values
+shap_values_set = "./Data/Processed_data/230616_shap_values.pickle"
 
 # ====================================================================
 # IMAGES
@@ -113,14 +115,14 @@ def load():
             df_client_test = pickle.load(df_client_test)
 
         # Import du dataframe du test set brut original
-        # with open(FILE_SHAP_VALUES, 'rb') as shap_values:
-        #    shap_values = pickle.load(shap_values)
+        with open(shap_values_set, 'rb') as shap_values:
+            shap_values = pickle.load(shap_values)
 
-    return df_test_set, df_client_test, df_train_set
+    return df_test_set, df_client_test, df_train_set, shap_values
 
 
 # Chargement des dataframes et du modèle
-df_test_set, df_client_test, df_train_set = load()
+df_test_set, df_client_test, df_train_set, shap_values = load()
 
 df_info_client = df_client_test[["SK_ID_CURR",
                                  "DAYS_BIRTH",
@@ -201,13 +203,13 @@ with st.container():
         st.write("*Client data*")
         client_info = df_info_client.loc[df_info_client["SK_ID_CURR"] == client_id]
         client_info.set_index("SK_ID_CURR", inplace=True)
-        st.table(client_info)
+        st.dataframe(client_info.style.format(precision = 0))
         # Infos principales sur la demande de prêt
         # st.write("*Demande de prêt*")
         client_pret = df_info_pret[df_info_pret["SK_ID_CURR"]
                                    == client_id].iloc[:, :]
         client_pret.set_index("SK_ID_CURR", inplace=True)
-        st.table(client_pret)
+        st.dataframe(client_pret.style.format(precision = 0))
 
 # ====================================================================
 # SCORE - PREDICTIONS
@@ -240,12 +242,13 @@ X_test = df_test_set[df_test_set["SK_ID_CURR"] == client_id]
 
 data = X_test.squeeze().to_dict()
 
+
 response_proba = requests.post(
-    "http://127.0.0.1:8000/predict_proba", json=data)
-y_proba = json.loads(response_proba.text)["prediction"]
+    "https://credit-score-api-7acf30a43d8a.herokuapp.com/predict_proba", json=data)
+y_proba = json.loads(response_proba.text)["prediction_proba"]
 score_client = int(np.rint(y_proba * 100))
 
-response_label = requests.post("http://127.0.0.1:8000/predict", json=data)
+response_label = requests.post("https://credit-score-api-7acf30a43d8a.herokuapp.com/predict", json=data)
 client_label = int(json.loads(response_label.text)["prediction"])
 
 
@@ -360,8 +363,8 @@ def all_infos_clients():
 
             with st.expander('All info, current client',
                              expanded=True):
-                st.dataframe(df_client_origin)
-                st.dataframe(df_current_client)
+                st.dataframe(df_client_origin.style.format(precision = 0))
+                st.dataframe(df_current_client.style.format(precision = 0))
 
 
 st.sidebar.subheader('More info')
@@ -379,9 +382,9 @@ def infos_clients_similaires():
     html_clients_similaires="""
         <div class="card">
             <div class="card-body" style="border-radius: 10px 10px 0px 0px;
-                  background: #DEC7CB; padding-top: 5px; width: auto;
+                  background: #B8C8FA; padding-top: 5px; width: auto;
                   height: 40px;">
-                  <h3 class="card-title" style="background-color:#DEC7CB; color:Crimson;
+                  <h3 class="card-title" style="background-color:#B8C8FA; color:#0031CC;
                       font-family:Georgia; text-align: center; padding: 0px 0;">
                       Clients similaires
                   </h3>
@@ -391,7 +394,7 @@ def infos_clients_similaires():
     titre = True
     
     # ====================== GRAPHIQUES COMPARANT CLIENT COURANT / CLIENTS SIMILAIRES =========================== 
-    if st.sidebar.checkbox("Voir graphiques comparatifs ?"):     
+    if st.sidebar.checkbox("Compare with other clients ?"):     
         
         if titre:
             st.markdown(html_clients_similaires, unsafe_allow_html=True)
@@ -462,10 +465,66 @@ def infos_clients_similaires():
                         title_text='Distribution of amount requested')
                         st.plotly_chart(fig_income)
 
-
-
 st.sidebar.subheader('Clients similaires')
 infos_clients_similaires()
+
+
+
+# --------------------------------------------------------------------
+# SHAP Values  
+# --------------------------------------------------------------------
+
+df_locator  = df_test_set[["SK_ID_CURR"]].copy().reset_index()
+index = df_locator.loc[df_locator["SK_ID_CURR"] == client_id].index.to_list()[0]
+
+def decision_explainer():
+    ''' Affiche les valeurs SHAP globales et local
+    '''
+    html_shap="""
+        <div class="card">
+            <div class="card-body" style="border-radius: 10px 10px 0px 0px;
+                  background: #B8C8FA; padding-top: 5px; width: auto;
+                  height: 40px;">
+                  <h3 class="card-title" style="background-color:#B8C8FA; color:#0031CC;
+                      font-family:Georgia; text-align: center; padding: 0px 0;">
+                      Decision criteria
+                  </h3>
+            </div>
+        </div>
+        """
+    titre = True
+    
+    # ====================== Facteurs d'influence de la décision basés sur SHAP =========================== 
+    if st.sidebar.checkbox("See decision criteria ?"): 
+        st.write(index)  
+        if titre:
+            st.markdown(html_shap, unsafe_allow_html=True)
+            titre = False
+            with st.spinner('**Printing comparing plots...**'): 
+                col3, col4 = st.columns((1,1))
+                with st.container():
+                    st.markdown(""" 
+                            * <span style="color:red">Red variables **disadvantage** credit score</span>.  
+                            * <span style="color:blue"> Blue variables  **advantage** credit score</span>. 
+                            """, unsafe_allow_html=True)
+
+                    # Profil client
+                    with col3:
+                        col3.header('Client: ')
+
+                        fig, ax = plt.subplots()
+                        ax.set_title('Decision criteria for the client')
+                        shap.plots.waterfall(shap_values[index])
+                        col3.pyplot(fig, bbox_inches='tight')
+                    with col4:
+                        col4.header('Global: ')
+                        fig, ax = plt.subplots()
+                        ax.set_title('Decision criteria overall')
+                        shap.plots.beeswarm(shap_values)
+                        col4.pyplot(fig, bbox_inches='tight')
+
+st.sidebar.subheader('Decision criteria')
+decision_explainer()
 
 
 
