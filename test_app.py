@@ -41,7 +41,7 @@ class TestUnitaire(unittest.TestCase):
     
     def test_numcol_column_test_set(self):
         print('Test: Asserting nb of columns in  of test_df.pkl')
-        test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'gzip')
+        test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'xz')
         result = test_df.shape[1]
         self.assertEqual(result, 546)
         
