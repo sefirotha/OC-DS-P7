@@ -87,7 +87,7 @@ class TestUnitaire(unittest.TestCase):
 
     def test_namecol_column_train_df(self):
         print('Test: Asserting columns name in  of train_df.pkl')
-        train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl'))
+        train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl')
         ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_train_df']
         result = train_df.columns.tolist()
         assert all([a == b for a, b in zip(ref, result)])
