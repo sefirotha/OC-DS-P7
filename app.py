@@ -30,13 +30,13 @@ import json
 # Répertoire de sauvegarde du meilleur modèle
 # best_model = "./Data/Model/tuned_lgbm_f10.pkl"
 # Test set
-file_test_set = "./Data/Processed_data/test_df.pkl"
+file_test_set = "./Data/Processed_data/test_df_LFS.pkl"
 # Client info, raw
-file_client_test = "./Data/Processed_data/application_test.pkl"
+file_client_test = "./Data/Processed_data/application_test_LFS.pkl"
 # Train set
-file_train_set = "./Data/Processed_data/train_df.pkl"
+file_train_set = "./Data/Processed_data/train_df_LFS.pkl"
 # Shap values
-shap_values_set = "./Data/Processed_data/230616_shap_values.pickle"
+shap_values_set = "./Data/Processed_data/230616_shap_values_LFS.pickle"
 
 # ====================================================================
 # IMAGES
