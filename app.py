@@ -14,17 +14,11 @@ __version__ = '1.0.0'
 
 import streamlit as st
 from PIL import Image
-#import joblib
-#import pycaret
 import requests
 import pickle
-from pycaret.classification import predict_model
-from pycaret.classification import plot_model
 import plotly.graph_objects as go
 import plotly.express as px
-
 import matplotlib.pyplot as plt
-#import seaborn as sns
 import numpy as np
 import shap
 import json
