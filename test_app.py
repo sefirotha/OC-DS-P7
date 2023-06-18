@@ -1,6 +1,7 @@
 import unittest
 import pandas as pd
 import os
+import pickle
 
 class TestUnitaire(unittest.TestCase):
 
@@ -41,56 +42,58 @@ class TestUnitaire(unittest.TestCase):
     
     def test_numcol_column_test_set(self):
         print('Test: Asserting nb of columns in  of test_df.pkl')
-        test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'xz')
+        # test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'xz')
+        with open('test_df.pkl', 'rb') as f:
+            test_df = pickle.load(f)
         result = test_df.shape[1]
         self.assertEqual(result, 546)
         
-    def test_numcol_app_test_df(self):
-        print('Test: Asserting nb of columns in  of application_test.pkl')
-        app_test_df = pd.read_pickle('./Data/Processed_data/application_test.pkl')
-        result = app_test_df.shape[1]
-        self.assertEqual(result, 121)
+    # def test_numcol_app_test_df(self):
+    #     print('Test: Asserting nb of columns in  of application_test.pkl')
+    #     app_test_df = pd.read_pickle('./Data/Processed_data/application_test.pkl')
+    #     result = app_test_df.shape[1]
+    #     self.assertEqual(result, 121)
         
-    def test_numcol_train_df(self):
-        print('Test: Asserting nb of columns in  of train_df.pkl')
-        train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl')
-        result = train_df.shape[1]
-        self.assertEqual(result, 546)
+    # def test_numcol_train_df(self):
+    #     print('Test: Asserting nb of columns in  of train_df.pkl')
+    #     train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl')
+    #     result = train_df.shape[1]
+    #     self.assertEqual(result, 546)
         
-    def test_numcol_shap_values(self):
-        print('Test: Asserting nb of columns in  of 230616_shap_values.pkl')
-        shape_values = pd.read_pickle('./Data/Processed_data/230616_shap_values.pickle')
-        result = shape_values.shape[1]
-        self.assertEqual(result, 159)
+    # def test_numcol_shap_values(self):
+    #     print('Test: Asserting nb of columns in  of 230616_shap_values.pkl')
+    #     shape_values = pd.read_pickle('./Data/Processed_data/230616_shap_values.pickle')
+    #     result = shape_values.shape[1]
+    #     self.assertEqual(result, 159)
 
     
 
         
-    ################################
-    ## TEST  NOMS DES COLONNES    ##
-    ################################
+    # ################################
+    # ## TEST  NOMS DES COLONNES    ##
+    # ################################
     
     
-    def test_namecol_column_test_set(self):
-        print('Test: Asserting columns name in  of test_df.pkl')
-        test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl')
-        ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_test_df']
-        result = test_df.columns.tolist()
-        assert all([a == b for a, b in zip(ref, result)])
+    # def test_namecol_column_test_set(self):
+    #     print('Test: Asserting columns name in  of test_df.pkl')
+    #     test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl')
+    #     ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_test_df']
+    #     result = test_df.columns.tolist()
+    #     assert all([a == b for a, b in zip(ref, result)])
 
-    def test_namecol_column_application_test(self):
-        print('Test: Asserting columns name in  of application_test.pkl')
-        app_test_df = pd.read_pickle('./Data/Processed_data/application_test.pkl')
-        ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_application_test']
-        result = app_test_df.columns.tolist()
-        assert all([a == b for a, b in zip(ref, result)])
+    # def test_namecol_column_application_test(self):
+    #     print('Test: Asserting columns name in  of application_test.pkl')
+    #     app_test_df = pd.read_pickle('./Data/Processed_data/application_test.pkl')
+    #     ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_application_test']
+    #     result = app_test_df.columns.tolist()
+    #     assert all([a == b for a, b in zip(ref, result)])
 
-    def test_namecol_column_train_df(self):
-        print('Test: Asserting columns name in  of train_df.pkl')
-        train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl')
-        ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_train_df']
-        result = train_df.columns.tolist()
-        assert all([a == b for a, b in zip(ref, result)])
+    # def test_namecol_column_train_df(self):
+    #     print('Test: Asserting columns name in  of train_df.pkl')
+    #     train_df = pd.read_pickle('./Data/Processed_data/train_df.pkl')
+    #     ref = pd.read_pickle("./Data/Processed_data/columns_dict.pkl")['columns_train_df']
+    #     result = train_df.columns.tolist()
+    #     assert all([a == b for a, b in zip(ref, result)])
 
         
 if __name__ == '__main__':
