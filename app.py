@@ -33,8 +33,6 @@ import json
 file_test_set = "./Data/Processed_data/test_df_LFS.pkl"
 # Client info, raw
 file_client_test = "./Data/Processed_data/application_test_LFS.pkl"
-# Train set
-file_train_set = "./Data/Processed_data/train_df_LFS.pkl"
 # Shap values
 shap_values_set = "./Data/Processed_data/230616_shap_values_LFS.pickle"
 
@@ -100,10 +98,6 @@ def load():
             df_test_set = pickle.load(df_test_set)
             df_test_set.drop("TARGET", axis=1, inplace=True)
 
-        # Import du dataframe du train set nettoyé et pré-procédé
-        with open(file_train_set, "rb") as df_train_set:
-            df_train_set = pickle.load(df_train_set)
-
         # Import du fichier application test original pour les infos clients
         with open(file_client_test, "rb") as df_client_test:
             df_client_test = pickle.load(df_client_test)
@@ -112,11 +106,11 @@ def load():
         with open(shap_values_set, 'rb') as shap_values_array:
             shap_values = pickle.load(shap_values_array)
 
-    return df_test_set, df_client_test, df_train_set, shap_values
+    return df_test_set, df_client_test, shap_values
 
 
 # Chargement des dataframes et du modèle
-df_test_set, df_client_test, df_train_set, shap_values = load()
+df_test_set, df_client_test, shap_values = load()
 
 df_info_client = df_client_test[["SK_ID_CURR",
                                  "DAYS_BIRTH",
