@@ -109,8 +109,8 @@ def load():
             df_client_test = pickle.load(df_client_test)
 
         # Import du dataframe du test set brut original
-        with open(shap_values_set, 'rb') as shap_values:
-            shap_values = pickle.load(shap_values)
+        with open(shap_values_set, 'rb') as shap_values_array:
+            shap_values = pickle.load(shap_values_array)
 
     return df_test_set, df_client_test, df_train_set, shap_values
 
