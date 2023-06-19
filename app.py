@@ -42,6 +42,7 @@ shap_values_set = "./Data/Processed_data/230616_shap_values_LFS.pickle"
 # Logo de l"entreprise
 logo = Image.open("./Data/images/logo.png")
 
+shap_global = Image.open("./Data/images/shap_global.png")
 
 # ====================================================================
 # FONCTIONS
@@ -159,6 +160,9 @@ df_info_pret.rename(columns={"NAME_CONTRACT_TYPE": "CONTRACT TYPE",
                              "NAME_HOUSING_TYPE": "HOUSING TYPE",
                              },
                     inplace=True)
+
+
+
 
 # ====================================================================
 # CHOIX DU CLIENT
@@ -506,10 +510,11 @@ def decision_explainer():
                         col3.pyplot(fig, bbox_inches='tight')
                     with col4:
                         col4.header('Global: ')
-                        fig, ax = plt.subplots()
-                        ax.set_title('Decision criteria overall')
-                        shap.plots.beeswarm(shap_values)
-                        col4.pyplot(fig, bbox_inches='tight')
+                        st.image(shap_global)
+                        # fig_globa_shap, ax_global_shap = plt.subplots()
+                        # ax_global_shap.set_title('Decision criteria overall')
+                        # shap.plots.beeswarm(shap_values)
+                        # col4.pyplot(fig_globa_shap, bbox_inches='tight')
 
 st.sidebar.subheader('Decision criteria')
 decision_explainer()
