@@ -40,13 +40,13 @@ class TestUnitaire(unittest.TestCase):
     ## TEST NOMBRE DE COLONNEs        ##
     ###################################
     
-    # def test_numcol_column_test_set(self):
-    #     print('Test: Asserting nb of columns in  of test_df.pkl')
-    #     # test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'xz')
-    #     with open('./Data/Processed_data/test_df_LFS.pkl', 'rb') as f:
-    #         test_df = pickle.load(f)
-    #     result = test_df.shape[1]
-    #     self.assertEqual(result, 546)
+    def test_numcol_column_test_set(self):
+        print('Test: Asserting nb of columns in  of test_df.pkl')
+        # test_df = pd.read_pickle('./Data/Processed_data/test_df.pkl', 'xz')
+        with open('./Data/Processed_data/test_df_LFS.pkl', 'rb') as f:
+            test_df = pickle.load(f)
+        result = test_df.shape[1]
+        self.assertEqual(result, 546)
         
     # def test_numcol_app_test_df(self):
     #     print('Test: Asserting nb of columns in  of application_test.pkl')
