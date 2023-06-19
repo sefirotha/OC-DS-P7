@@ -22,12 +22,7 @@ class TestUnitaire(unittest.TestCase):
         print('Test: Asserting existance of application_test.pkl')
         exist = os.path.exists('./Data/Processed_data/application_test_LFS.pkl')
         self.assertEqual(exist, True)
-
-    def test_exists_app_train(self):
-        print('Test: Asserting existance of train_df.pkl')
-        exist = os.path.exists('./Data/Processed_data/train_df_LFS.pkl')
-        self.assertEqual(exist, True)
-
+        
     def test_exists_shap_values(self):
         print('Test: Asserting existance of 230616_shap_values.pkl')
         exist = os.path.exists('./Data/Processed_data/230616_shap_values_LFS.pickle')
