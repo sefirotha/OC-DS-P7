@@ -1,3 +1,22 @@
+Branche api-dev:
+api.py : fichier codant l'api
+Procfile: config déploiement sur Heroku
+runtime.txt: config python pour Heroku
+requirements.txt: packages requis pour que l'api tourne
+model.pkl: fichier du modèle de prédiction
+
+Branche main:
+app.py: fichier codant le tableau de bord
+test_app.py: test unitaire
+Procfile: config déploiement sur Heroku
+runtime.txt: config python pour Heroku
+setup.sh: script pour lancer Streamlit sur heroku
+requirements.txt: packages requis pour que l'application tourne
+Data: dossier contenant les données appelées dans le tableau de bord
+Notebooks: notebooks d'analyse
+Workflows: Github actions de déploiement
+
+
 # Contexte
 
 Vous êtes Data Scientist au sein d'une société financière, nommée "Prêt à dépenser", qui propose des crédits à la consommation pour des personnes ayant peu ou pas du tout d'historique de prêt.
