@@ -1,19 +1,33 @@
 Branche api-dev:
+
 api.py : fichier codant l'api
+
 Procfile: config déploiement sur Heroku
+
 runtime.txt: config python pour Heroku
+
 requirements.txt: packages requis pour que l'api tourne
+
 model.pkl: fichier du modèle de prédiction
 
 Branche main:
+
 app.py: fichier codant le tableau de bord
+
 test_app.py: test unitaire
+
 Procfile: config déploiement sur Heroku
+
 runtime.txt: config python pour Heroku
+
 setup.sh: script pour lancer Streamlit sur heroku
+
 requirements.txt: packages requis pour que l'application tourne
+
 Data: dossier contenant les données appelées dans le tableau de bord
+
 Notebooks: notebooks d'analyse
+
 Workflows: Github actions de déploiement
 
 
